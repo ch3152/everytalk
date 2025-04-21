@@ -5,6 +5,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDateTime;
 
+// 회원가입 및 유저 정보 도큐먼트
 @Data
 @Document(collection = "users")
 public class User {

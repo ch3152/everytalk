@@ -1,4 +1,3 @@
-// Post.java
 package com.example.talkdemo.model;
 
 import lombok.Data;
@@ -10,6 +9,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+// SNS 게시글 도큐먼트
 @Data
 @Document(collection = "sns_post")
 public class Post {
@@ -36,5 +36,3 @@ public class Post {
         private LocalDateTime createdAt = LocalDateTime.now();
     }
 }
-
-

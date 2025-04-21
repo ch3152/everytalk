@@ -7,17 +7,16 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
 
+// 일반 채팅 메시지 저장용 도큐먼트
 @Data
 @Document(collection = "chatMessages")
 public class ChatDocument {
-
     @Id
     private String id;
     private String roomId;
     private String sender;
     private String content;
 
-    // TTL 인덱스: 10분) 후 자동 삭제
     @Indexed(name = "createdAtTTL", expireAfterSeconds = 600)
     private LocalDateTime createdAt = LocalDateTime.now();
 
@@ -26,7 +25,6 @@ public class ChatDocument {
         doc.setRoomId(message.getRoomId());
         doc.setSender(message.getSender());
         doc.setContent(message.getContent());
-        // createdAt은 기본값 또는 저장 시점의 시간이 자동 설정됨
         return doc;
     }
 }

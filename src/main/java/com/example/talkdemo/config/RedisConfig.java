@@ -16,6 +16,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @Configuration
 public class RedisConfig {
 
+    // 챗메세지
     @Bean
     public RedisTemplate<String, ChatMessage> chatMessageRedisTemplate(RedisConnectionFactory connectionFactory) {
         ObjectMapper mapper = new ObjectMapper();
@@ -32,6 +33,7 @@ public class RedisConfig {
         return template;
     }
 
+    // 그룹
     @Bean
     public RedisTemplate<String, GroupMessage> groupMessageRedisTemplate(RedisConnectionFactory connectionFactory) {
         ObjectMapper mapper = new ObjectMapper();
@@ -48,6 +50,7 @@ public class RedisConfig {
         return template;
     }
 
+    // 게시글
     @Bean
     public RedisTemplate<String, Post> postRedisTemplate(RedisConnectionFactory connectionFactory) {
         ObjectMapper mapper = new ObjectMapper();
@@ -64,6 +67,7 @@ public class RedisConfig {
         return template;
     }
     
+    // 일반 문자열 캐시용
     @Bean
     public RedisTemplate<String, String> stringRedisTemplate(RedisConnectionFactory connectionFactory) {
         RedisTemplate<String, String> template = new RedisTemplate<>();

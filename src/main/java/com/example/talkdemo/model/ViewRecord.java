@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDate;
 
+// 게시글 조회 기록 도큐먼트
 @Data
 @Document(collection = "sns_view_track")
 public class ViewRecord {

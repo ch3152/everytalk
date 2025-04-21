@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
 
+// 일대일 채팅방 정보 도큐먼트
 @Data
 @Document(collection = "chatRooms")
 public class ChatRoom {
@@ -16,7 +17,7 @@ public class ChatRoom {
     private String userA;
     private String userB;
     private String lastMessage;
-    // TTL 인덱스: 10분) 후 자동 삭제
+
     @Indexed(name = "createdAtTTL", expireAfterSeconds = 600)
     private LocalDateTime lastTimestamp;
 }

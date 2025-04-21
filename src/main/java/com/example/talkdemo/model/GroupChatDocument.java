@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
 
+// 단체 채팅 메시지 백업용 도큐먼트
 @Data
 @Document(collection = "group_chat")
 public class GroupChatDocument {
@@ -14,8 +15,8 @@ public class GroupChatDocument {
     private String roomId;
     private String sender;
     private String content;
-    private long timestamp;   // epoch millis
-    private Date savedAt;     // 백업 시각
+    private long timestamp;
+    private Date savedAt;
 
     public static GroupChatDocument fromMessage(GroupMessage msg) {
         GroupChatDocument doc = new GroupChatDocument();

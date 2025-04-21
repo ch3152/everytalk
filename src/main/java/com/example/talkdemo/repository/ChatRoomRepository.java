@@ -1,4 +1,3 @@
-// src/main/java/com/example/talkdemo/repository/ChatRoomRepository.java
 package com.example.talkdemo.repository;
 
 import com.example.talkdemo.model.ChatRoom;

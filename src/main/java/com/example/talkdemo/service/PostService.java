@@ -26,6 +26,7 @@ public class PostService {
     private static final int HOT_THRESHOLD = 5;
     private static final long HOT_TTL_SECONDS = 180;
 
+    // 게시글 생성
     public Post createPost(String nickname, String content) {
         Post post = new Post();
         post.setNickname(nickname);
@@ -33,6 +34,7 @@ public class PostService {
         return mongoTemplate.save(post);
     }
 
+    // 전체 게시글 조회
     public List<Post> getAllPosts() {
         return mongoTemplate.find(
             new Query().with(Sort.by(Sort.Direction.DESC, "createdAt")),
@@ -40,6 +42,7 @@ public class PostService {
         );
     }
 
+    // Redis에서 핫 게시글만 조회
     public List<Post> getHotPostsFromRedis() {
         Set<String> keys = postRedisTemplate.keys(HOT_KEY_PREFIX + "*");
         if (keys == null) return new ArrayList<>();
@@ -51,6 +54,7 @@ public class PostService {
             .collect(Collectors.toList());
     }
 
+    // DB/Redis 병합 게시글 조회
     public List<Post> getMergedPosts() {
         List<Post> allDbPosts = getAllPosts();
         List<Post> finalList = new ArrayList<>();
@@ -62,6 +66,7 @@ public class PostService {
         return finalList;
     }
 
+    // 조회수 증가 및 중복 방지
     public void increaseViewCount(String postId, String nickname, String ip) {
         LocalDate today = LocalDate.now();
 
@@ -92,6 +97,7 @@ public class PostService {
         }
     }
 
+    // 게시글 좋아요 처리
     public Post likePost(String postId, String nickname) {
         Post post = mongoTemplate.findById(postId, Post.class);
         if (post == null) throw new RuntimeException("게시글 없음");
@@ -108,6 +114,7 @@ public class PostService {
         return post;
     }
 
+    // 게시글 댓글 추가 처리
     public Post addComment(String postId, String nickname, String commentContent) {
         Post post = mongoTemplate.findById(postId, Post.class);
         if (post == null) throw new RuntimeException("게시글 없음");
@@ -119,31 +126,30 @@ public class PostService {
         saveOrCacheHot(post);
         return post;
     }
+
+    // 핫 게시글 조건 판단 후 Redis 저장 또는 DB 저장
     private void saveOrCacheHot(Post post) {
         String key = HOT_KEY_PREFIX + post.getId();
         String trafficKey = "traffic:" + post.getId();
-    
-        // 트래픽 카운트 증가
+
         Long trafficCount = postRedisTemplate.opsForValue().increment(trafficKey);
-    
-        // TTL 설정 (처음 발생 시만)
+
         if (trafficCount != null && trafficCount == 1L) {
             postRedisTemplate.expire(trafficKey, 3, TimeUnit.MINUTES);
         }
-    
-        // 핫 조건 만족 시에만 캐싱
+
         if (trafficCount != null && trafficCount >= HOT_THRESHOLD) {
             Post merged = post;
-    
+
             if (postRedisTemplate.hasKey(key)) {
                 Post cached = postRedisTemplate.opsForValue().get(key);
                 if (cached != null) {
                     Set<Post.Comment> mergedComments = new LinkedHashSet<>(cached.getComments());
                     mergedComments.addAll(post.getComments());
-    
+
                     Set<Post.LikeInfo> mergedLikes = new LinkedHashSet<>(cached.getLikedUsers());
                     mergedLikes.addAll(post.getLikedUsers());
-    
+
                     cached.setComments(new ArrayList<>(mergedComments));
                     cached.setLikedUsers(new ArrayList<>(mergedLikes));
                     cached.setViewCount(post.getViewCount());
@@ -151,33 +157,33 @@ public class PostService {
                     merged = cached;
                 }
             }
-    
+
             postRedisTemplate.opsForValue().set(key, merged, HOT_TTL_SECONDS, TimeUnit.SECONDS);
         } else {
-            mongoTemplate.save(post); // 조건 안되면 DB에만 저장
+            mongoTemplate.save(post);
         }
     }
-    
-    // PostService.java 내부에 추가
-public Set<String> getHotPostIdsFromRedis() {
-    Set<String> keys = postRedisTemplate.keys("hot:post:*");
-    if (keys == null) return Collections.emptySet();
 
-    return keys.stream()
-        .map(k -> k.replace("hot:post:", ""))
-        .collect(Collectors.toSet());
+    // Redis에 존재하는 핫 게시글 ID 조회
+    public Set<String> getHotPostIdsFromRedis() {
+        Set<String> keys = postRedisTemplate.keys("hot:post:*");
+        if (keys == null) return Collections.emptySet();
+
+        return keys.stream()
+            .map(k -> k.replace("hot:post:", ""))
+            .collect(Collectors.toSet());
     }
+
+    // 게시글 검색 (본문, 닉네임, 댓글 내용 기준)
     public List<Post> searchPosts(String keyword) {
         Criteria contentCriteria = Criteria.where("content").regex(".*" + keyword + ".*", "i");
         Criteria nicknameCriteria = Criteria.where("nickname").regex(".*" + keyword + ".*", "i");
         Criteria commentCriteria = Criteria.where("comments.content").regex(".*" + keyword + ".*", "i");
-    
+
         Query query = new Query(new Criteria().orOperator(
             contentCriteria, nicknameCriteria, commentCriteria
         )).with(Sort.by(Sort.Direction.DESC, "createdAt"));
-    
+
         return mongoTemplate.find(query, Post.class);
     }
-    
-
 }

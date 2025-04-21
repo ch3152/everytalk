@@ -27,6 +27,7 @@ public class GroupTalkService {
     private final RedisTemplate<String, GroupMessage> redisTemplate;
     private final SimpMessagingTemplate messagingTemplate;
 
+    // 단체 채팅방 생성
     public GroupRoom createRoom(String title, String host) {
         GroupRoom room = new GroupRoom();
         room.setId(UUID.randomUUID().toString());
@@ -39,32 +40,32 @@ public class GroupTalkService {
         return saved;
     }
 
+    // 전체 단체방 목록 조회
     public List<GroupRoom> getAllRooms() {
         Query query = new Query().with(Sort.by(Sort.Direction.DESC, "createdAt"));
         return mongoTemplate.find(query, GroupRoom.class);
     }
 
+    // 사용자 참여 단체방 조회
     public List<GroupRoom> getRoomsByNickname(String nickname) {
         Query query = new Query(Criteria.where("members").in(nickname))
                         .with(Sort.by(Sort.Direction.DESC, "createdAt"));
         return mongoTemplate.find(query, GroupRoom.class);
     }
 
+    // Redis에 그룹 메시지 저장
     public void saveGroupMessageToRedis(GroupMessage message) {
         String key = "group:room:" + message.getRoomId();
         redisTemplate.opsForList().rightPush(key, message);
         redisTemplate.expire(key, Duration.ofMinutes(3));
     }
 
-    /**
-     * 그룹 채팅 메시지를 Redis에서 먼저 조회하고,
-     * 없으면 MongoDB에서 백업된 메시지를 조회하여 반환
-     */
+    // Redis/MongoDB에서 단체방 메시지 기록 불러오기
     public List<GroupMessage> getGroupMessageHistory(String roomId) {
         String key = "group:room:" + roomId;
         List<GroupMessage> messages = redisTemplate.opsForList().range(key, 0, -1);
         if (messages == null || messages.isEmpty()) {
-            log.info("[그룹조회] Redis에 메시지 없음, MongoDB에서 조회 - roomId: {}", roomId);
+       
             Query query = new Query(Criteria.where("roomId").is(roomId));
             List<GroupChatDocument> docs = mongoTemplate.find(query, GroupChatDocument.class);
             messages = docs.stream().map(doc -> {
@@ -75,13 +76,14 @@ public class GroupTalkService {
                 msg.setTimestamp(doc.getTimestamp());
                 return msg;
             }).collect(Collectors.toList());
-            log.info("[그룹조회] MongoDB에서 복원된 메시지 개수: {}", messages.size());
+           
         } else {
-            log.info("[그룹조회] Redis에서 메시지 개수: {}", messages.size());
+            
         }
         return messages;
     }
 
+    // 단체방 입장 및 멤버 추가
     public GroupRoom enterRoom(String roomId, String nickname) {
         GroupRoom room = mongoTemplate.findById(roomId, GroupRoom.class);
         if (room == null) {

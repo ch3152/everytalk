@@ -11,6 +11,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+// 핫 게시글 Redis → MongoDB 백업 스케줄러
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -26,17 +27,15 @@ public class HotPostBackupScheduler {
 
         for (String key : keys) {
             Long ttl = postRedisTemplate.getExpire(key, TimeUnit.SECONDS);
-            log.info("[HotPost 스케줄러] 키: {} TTL: {}", key, ttl);
-
             if (ttl == null || ttl <= 90) {
                 Post post = postRedisTemplate.opsForValue().get(key);
                 if (post != null) {
                     mongoTemplate.save(post);
-                    log.info("[핫 게시글 백업] DB 저장 완료 - key: {}", key);
+                    log.info("[HotPostBackup] DB 저장 완료 - {}", key);
                 }
                 postRedisTemplate.delete(key);
-                log.info("[핫 게시글 캐시 삭제] TTL 만료로 Redis에서 제거 - key: {}", key);
+                log.info("[HotPostBackup] Redis 캐시 삭제 완료 - {}", key);
             }
         }
     }
-}  
+}

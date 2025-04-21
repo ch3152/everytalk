@@ -1,3 +1,4 @@
+
 package com.example.talkdemo.jwt;
 
 import io.jsonwebtoken.*;
@@ -7,14 +8,12 @@ import org.springframework.stereotype.Component;
 import java.security.Key;
 import java.util.Date;
 
+// JWT 생성 및 검증 유틸 클래스
 @Component
 public class JwtUtil {
 
-  
     private final long EXPIRATION = 1000 * 60 * 60 * 24; // 1일
-
-    private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS512); // 안전한 키 자동 생성
-
+    private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
 
     public String generateToken(String nickname) {
         return Jwts.builder()

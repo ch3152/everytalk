@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
+// 단체 채팅방 API 컨트롤러
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/group")
@@ -20,6 +21,7 @@ public class GroupTalkController {
     private final GroupTalkService groupTalkService;
     private final JwtUtil jwtUtil;
 
+    // 단체 채팅방 생성
     @PostMapping("/create")
     public GroupRoom createRoom(@RequestHeader("Authorization") String authHeader,
                                 @RequestBody Map<String, String> request) {
@@ -28,11 +30,13 @@ public class GroupTalkController {
         return groupTalkService.createRoom(request.get("title"), nickname);
     }
 
+    // 전체 단체 채팅방 조회
     @GetMapping("/all")
     public List<GroupRoom> allRooms() {
         return groupTalkService.getAllRooms();
     }
 
+    // 내가 참여한 단체 채팅방 조회
     @GetMapping("/my")
     public List<GroupRoom> myRooms(@RequestHeader("Authorization") String authHeader) {
         String token = authHeader.substring(7);
@@ -40,11 +44,13 @@ public class GroupTalkController {
         return groupTalkService.getRoomsByNickname(nickname);
     }
 
+    // 채팅방 메시지 히스토리 조회
     @GetMapping("/history/{roomId}")
     public List<GroupMessage> getHistory(@PathVariable String roomId) {
         return groupTalkService.getGroupMessageHistory(roomId);
     }
 
+    // 채팅방 입장 처리
     @PostMapping("/enter/{roomId}")
     public GroupRoom enterRoom(@RequestHeader("Authorization") String authHeader,
                                @PathVariable String roomId) {

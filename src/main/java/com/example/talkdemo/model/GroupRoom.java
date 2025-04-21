@@ -11,6 +11,7 @@ import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.List;
 
+// 단체 채팅방 정보 도큐먼트
 @Data
 @Document(collection = "group_room")
 public class GroupRoom {
@@ -20,16 +21,14 @@ public class GroupRoom {
     private String host;
     private List<String> members;
 
-    @Indexed(name = "createdAtTTL", expireAfterSeconds = 120) // 2분 후 삭제
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")  // JSON 직렬화 시 포맷 지정
+    @Indexed(name = "createdAtTTL", expireAfterSeconds = 120)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createdAt;
 
-    // 생성 시 LocalDateTime을 Date로 변환
     public void setCreatedAt(LocalDateTime localDateTime) {
         this.createdAt = Date.from(localDateTime.toInstant(ZoneOffset.UTC));
     }
 
-    // 저장 시 LocalDateTime으로 반환 (필요시 사용)
     public LocalDateTime getCreatedAtLocalDateTime() {
         return this.createdAt.toInstant().atZone(ZoneOffset.UTC).toLocalDateTime();
     }
