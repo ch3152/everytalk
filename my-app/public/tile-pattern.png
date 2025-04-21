@@ -1,0 +1,6 @@
+body {
+  background: url("/tile-pattern.png") repeat;
+  background-color: #1a202c; /* Tailwind bg-gray-900 */
+}
+
+

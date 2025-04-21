@@ -1,0 +1,87 @@
+/* Layout.css */
+
+.layout-container {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #fff0f5; /* 연분홍 느낌의 배경 */
+}
+
+/* 상단 네비게이션 */
+.home-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 30px;
+  background-color: #fff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+.search-box {
+  width: 300px;
+  padding: 8px 12px;
+  border-radius: 20px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.search-box:focus {
+  outline: none;
+  border-color: #4a90e2;
+  box-shadow: 0 0 5px rgba(74, 144, 226, 0.3);
+}
+
+
+.nav-left,
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.logo-text {
+  font-size: 24px;
+  font-weight: bold;
+  color: #ff69b4;
+}
+
+.menu-button,
+.nav-button {
+  background: none;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  color: #333;
+}
+
+.menu-button:hover,
+.nav-button:hover {
+  text-decoration: underline;
+}
+
+.nav-center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  margin-left: -32px;  /* ✅ 약 2cm 왼쪽 이동 (1cm ≒ 16px) */
+}
+
+.search-box {
+  width: 100%;
+  max-width: 600px;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+}
+.nickname {
+  font-weight: bold;
+}
+
+/* 메인 컨텐츠 영역 */
+.main-content {
+  flex: 1;
+  padding: 30px;
+}
+

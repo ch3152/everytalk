@@ -1,0 +1,66 @@
+/* 전체 배경 설정 */
+.main-container {
+  height: 100vh;
+  margin: 3vh auto; /* 위아래 여백 추가 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-size: 90%;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* 로그인 박스 */
+.login-box {
+  background: white;
+  padding: 30px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  text-align: center;
+  width: 350px; /* 고정 크기 */
+}
+
+/* 입력 칸 스타일 */
+.input-box {
+  width: 80%; /* 입력칸 크기 조정 */
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background: #f9f9f9;
+  outline: none;
+  margin-bottom: 15px; /* 아래 여백 */
+}
+
+/* 버튼 그룹 */
+.button-group {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+/* 버튼 스타일 */
+.button-group button {
+  width: 40%;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.login-btn {
+  background-color: #3498db;
+}
+
+.signup-btn {
+  background-color: #555;
+}
+
+.login-btn:hover {
+  background-color: #2980b9;
+}
+
+.signup-btn:hover {
+  background-color: #444;
+}

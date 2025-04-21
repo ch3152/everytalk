@@ -1,0 +1,133 @@
+.home-container {
+  position: absolute;
+  top: 64px; /* 헤더 높이에 맞게 조정 (예: 64px) */
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  background: linear-gradient(135deg, #ffe6f0, #ffc1d1, #fff5f8, #ffcce2);
+  background-size: 300% 300%;
+  animation: waveGradient 10s ease-in-out infinite;
+
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 0;
+}
+
+@keyframes waveGradient {
+  0% { background-position: 0% 0%; }
+  50% { background-position: 100% 100%; }
+  100% { background-position: 0% 0%; }
+}
+
+.main-layout {
+  display: flex;
+  flex: 1;
+  height: 100%;
+  padding: 30px;
+  gap: 20px;
+  box-sizing: border-box;
+}
+
+/* 왼쪽 영역 */
+.main-left {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.main-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  height: 100%;
+  text-align: center;
+}
+
+.main-title {
+  font-size: 28px;
+  font-weight: bold;
+  color: #ff69b4;
+  margin-bottom: 20px;
+}
+
+/* 버튼 */
+.start-button {
+  padding: 12px 24px;
+  background-color: #ff69b4;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.start-button:hover {
+  background-color: #ff85c1;
+  transform: translateY(-2px);
+}
+
+/* 오른쪽 영역 */
+.main-right {
+  width: 250px;
+  max-height: 120%;
+}
+
+.room-box {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  overflow-y: auto;
+  height: 100%;
+}
+
+.room-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.room-list li {
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+}
+.chat-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.chat-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #888;
+}
+
+.chat-nickname {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.last-message {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.last-time {
+  font-size: 12px;
+  color: #999;
+  margin-top: 2px;
+}

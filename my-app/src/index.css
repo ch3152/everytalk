@@ -1,0 +1,21 @@
+/* ✅ Tailwind 기본 설정 추가 (이게 제일 먼저 와야 함!) */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ✅ 기존 body 스타일 유지 */
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+}
+
+/* ✅ 코드 폰트 설정 유지 */
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
