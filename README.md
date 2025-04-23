@@ -10,6 +10,31 @@
 - 저장소: Redis(캐싱, 채팅 로그 임시 저장), MongoDB(영구 데이터 저장)
 - 배포: AWS EC2 기반 Linux 환경, Atlas MongoDB 연동
 - url 주소 : http://13.124.207.177:3000/  (실시간 배포 운영중!!)
+-    ⬇️ **아래를 눌러 실제 구현 사진을 확인하세요!**
+- <details>
+    <summary>🔽 [더보기 클릭!] 👉(바바톡 페이지 실제 구현 사진)</summary>
+    
+  ### 1 로그인
+    ![image](https://github.com/user-attachments/assets/c2d6e2cf-d58a-4299-b3dc-3007ec3aa529)
+  ### 2회원가입
+    ![image](https://github.com/user-attachments/assets/fbd7622e-7d3e-442e-b787-fae5ddde6a45)
+  ### 3메인 화면
+  ![image](https://github.com/user-attachments/assets/80d83445-7b7b-4c69-9a35-6192507d1d87)
+  ### 4 일 대일 채팅 상대 찾는중
+  ![image](https://github.com/user-attachments/assets/0d53ad0c-5cc5-4591-aea9-478585c4de48)
+  ### 5 일 대일 매칭 후 대화창
+  ![image](https://github.com/user-attachments/assets/77dde228-f31b-4c7f-bfc2-f97d6776a71b)
+  ### 6 단톡방 리스트
+  ![image](https://github.com/user-attachments/assets/7928e9d5-8dad-40c0-8bd7-327beddb1c66)
+  ### 7 단톡방 대화창
+  ![image](https://github.com/user-attachments/assets/052484db-468e-4538-b90f-523b9e0b86a8)
+  ### 8 Sns 게시물 페이지
+  ![image](https://github.com/user-attachments/assets/fb81654e-152b-47b2-afdf-f82db02a4722)
+  ### 9 마이페이지
+  ![image](https://github.com/user-attachments/assets/c249ec9e-3528-4170-a77a-556d7e9f8d06)
+  </details>
+
+  
 
 <br>
 <br>
@@ -47,19 +72,6 @@
 
 
 ![image](https://github.com/user-attachments/assets/6be2da40-1863-4cda-8627-8163ba752331)
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -198,13 +210,80 @@ Sns 게시물을 누가 조회 했는지의 정보가 저장됩니다.
 | `ip`       | String      | 유저 IP 주소                                   |
 | `date`     | Date        | 조회 일자                                      |
 | `_class`   | String      | 자바 모델 클래스 정보 (`ViewRecord`)         |
+</details>
 
 
+## 핵심 기능 
 
+### 1. 회원가입 & 로그인
 
-## 핵심 기능 & 
+1 DB 조회를 통한 아이디 중복 방지
+2 bcrypt 알고리즘으로 비밀번호 암호화
+
+3 이메일 인증 코드 입력 완료 시 회원가입 가능
+
+4 JWT 토큰 기반 로그인 → 동기 처리 + 보안 강화
+
+### 2. 유저 매칭
+1 WebSocket을 통해 실시간 연결
+
+2 최소 2명이 매칭 버튼을 눌러야 연결 가능
+
+### 3 1:1 랜덤 대화 
+1 메시지 전송 시 Redis에 5분 TTL의 채팅방 생성 → 서버 부하 방지 
+
+2 대화 종료 시 스케줄러 기능을 통해 30초마다 자동으로 조회 TTL이 1분 이하이면 스케줄러가 MongoDB로 백업 → Write-back 캐시 전략
+
+3 과거 대화는 Redis 우선 조회, 없으면 MongoDB 복원
+
+### 4. 단체 채팅방
+1 방 생성 시 Redis에 룸키 자동 생성
+
+2 채팅 발생 시 TTL 5분으로 Redis 유지
+
+3 스케줄러 기능을 통해 30초마다 자동으로 조회 TTL 1분 이하가 되면 MongoDB로 자동 백업 → Write-back 캐시 전략
+
+4 과거 대화는 Redis → MongoDB 순서로 복원
+
+### 5. SNS 게시판
+1 인기글은 Redis에만 캐싱 → 트래픽 분산
+
+2 조회수는 IP 기반 중복 제한 + TTL 24시간 적용
+
+3 조회수 + 하트 + 댓글 합산이 기준 이상일 경우 핫 게시판에 노출
+
+4 핫 게시글은 모든 유저에게 게시판 상단 고정
+
+### 6. 게시물 검색
+1 닉네임, 게시글, 댓글 기준으로 통합 검색
+
+2 Criteria 기반 + 트리 구조 적용 → O(log n²) 수준 성능 추정
+
+### 7. 마이페이지
+1 MongoDB를 통해 회원정보 조회
+
+2 유저의 게시글 수, 하트 수, 댓글 수 등 통계 데이터 반환
+
 
 ## 트러블슈팅
 
+### Redis TTL 기반 채팅 백업 로직 실패 
+
+#### 문제 상황
+
+처음에는 1:1 채팅이나 단체 채팅에서 Redis에 저장된 채팅룸 키에 TTL을 설정하고
+TTL이 30초 이하로 남았을 때 DB에 채팅 기록을 저장하고 키가 자동 삭제되도록 처리함
+
+하지만 실제 운영 중 확인해보니
+TTL이 줄어드는 것은 확인되었으나 DB 저장 로직이 동작하지 않음
+로그 확인 및 로직 점검을 진행했지만 명확한 원인을 찾지 못했음
+
+#### 해결 방법
+
+구조 자체를 변경하기로 결정하고
+스케줄러를 도입하여 30초마다 Redis 키들을 직접 조회하고
+TTL이 1분 미만으로 남은 채팅방에 대해 강제적으로 MongoDB에 저장되도록 수정함
+
 ## 회고록
 
+jwt 인증 방식을 한번 도입해 봤는데 초기 설정 방식이 복잡해 어려웠다. 그리고 aws 클라우드에서 인스턴스 생성하고 직접 배포를 해봤는데 이게 조금 복잡한게 아니라 직접 하나하나 콘솔창에서 명령어로 라이브러리 설치, 컴파일, 실행까지 전부 명령어로 수작업으로 처리하다 보니 vscode나 이클립스 같은 IDE프로그램의 편리성을 뼈저리게 느꼈다.
