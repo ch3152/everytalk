@@ -46,6 +46,22 @@
 ## 아키텍처
 
 
+![image](https://github.com/user-attachments/assets/6be2da40-1863-4cda-8627-8163ba752331)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## 테이블구성
 <details>
@@ -76,7 +92,7 @@
 | `email`        | String       | 이메일 주소                         |
 | `birthDate`    | String       | 생년월일 (yyyy-mm-dd 형식)         |
 | `createdAt`    | Date         | 가입일                              |
-| `_class`       | String       | 매핑된 자바 클래스 정보 (`User`)   |
+| `_class`       | String       | 자바 모델 클래스 정보 (`User`)   |
 
 
 ## 2 일 대일 방 테이블
@@ -94,7 +110,7 @@
 | `userB`        | String      | 유저 B 닉네임                                |
 | `lastMessage`  | String      | 마지막 메시지 내용                           |
 | `lastTimestamp`| Date        | 마지막 메시지 시간                           |
-| `_class`       | String      | 매핑된 자바 클래스 정보 (`ChatRoom`)         |
+| `_class`       | String      | 자바 모델 클래스 정보 (`ChatRoom`)         |
 
 
 ## 3 일 대일 대화 테이블
@@ -110,7 +126,7 @@
 | `sender`     | String      | 보낸 사람 닉네임                            |
 | `content`    | String      | 메시지 내용                                 |
 | `createdAt`  | Date        | 메시지 작성 시간                            |
-| `_class`     | String      | 매핑된 자바 클래스 정보 (`ChatDocument`)    |
+| `_class`     | String      | 자바 모델 클래스 정보 (`ChatDocument`)    |
 
 
 
@@ -126,9 +142,9 @@
 | `_id`        | ObjectId       | 그룹 방 고유 ID                                   |
 | `title`      | String         | 그룹 방 제목                                      |
 | `host`       | String         | 방장 닉네임                                       |
-| `members`    | Array[String]  | 참가자 닉네임 리스트                             |
+| `members`    | Array[String]  | 참가자 닉네임 리스트  (배열로 저장됨)               |
 | `createdAt`  | Date           | 생성 일시                                         |
-| `_class`     | String         | 매핑된 자바 클래스 정보 (`GroupRoom`)            |
+| `_class`     | String         | 자바 모델 클래스 정보 (`GroupRoom`)            |
 
 
 ## 5 단체톡 대화 테이블
@@ -143,9 +159,9 @@
 | `roomId`     | String      | 그룹 채팅방 ID                                     |
 | `sender`     | String      | 보낸 사람 닉네임                                   |
 | `content`    | String      | 메시지 내용                                        |
-| `timestamp`  | Long        | 메시지 유닉스 타임스탬프                           |
+| `timestamp`  | Long        | 메시지 보낼 때 현재 시간                          |
 | `savedAt`    | Date        | 메시지 저장 시간                                   |
-| `_class`     | String      | 매핑된 자바 클래스 정보 (`GroupChatDocument`)     |
+| `_class`     | String      | 자바 모델 클래스 정보 (`GroupChatDocument`)     |
 
 
 ## 6 Sns게시물 테이블
@@ -162,9 +178,9 @@ Sns 게시물을 올리고 유저들의 댓글이나 좋아요의 정보가 저�
 | `content`     | String         | 게시글 내용                                         |
 | `createdAt`   | Date           | 게시글 작성 시간                                    |
 | `viewCount`   | Int            | 게시글 조회 수                                      |
-| `likedUsers`  | Array[Object]  | 좋아요 누른 유저 배열 (`nickname`, `likedAt` 포함) |
-| `comments`    | Array[Object]  | 댓글 배열 (`nickname`, `content`, `createdAt` 포함)|
-| `_class`      | String         | 매핑된 자바 클래스 정보 (`Post`)                   |
+| `likedUsers`  | Array[Object]  | 좋아요 누른 유저 정보 (`nickname`, `likedAt` 포함) (배열로 저장됨)  |
+| `comments`    | Array[Object]  | 댓글 정보 (`nickname`, `content`, `createdAt` 포함) (배열로 저장됨) |
+| `_class`      | String         |자바 모델 클래스 정보 (`Post`)                   |
 
 
 ## 7 Sns게시물 조회수 테이블
@@ -181,7 +197,7 @@ Sns 게시물을 누가 조회 했는지의 정보가 저장됩니다.
 | `nickname` | String      | 조회한 유저 닉네임                             |
 | `ip`       | String      | 유저 IP 주소                                   |
 | `date`     | Date        | 조회 일자                                      |
-| `_class`   | String      | 매핑된 자바 클래스 정보 (`ViewRecord`)         |
+| `_class`   | String      | 자바 모델 클래스 정보 (`ViewRecord`)         |
 
 
 
