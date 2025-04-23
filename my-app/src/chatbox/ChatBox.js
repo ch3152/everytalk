@@ -67,7 +67,8 @@ function ChatBox({ roomId, partnerNickname, isGroup = false }) {
 
   // WebSocket 연결
   useEffect(() => {
-    const socket = new SockJS("http://13.124.207.177:8080/ws"); // EC2 퍼블릭 IP:포트
+    const socket = new SockJS("/ws");
+    //const socket = new SockJS("http://13.124.207.177:8080/ws"); // EC2 퍼블릭 IP:포트
     const client = Stomp.over(socket);
     stompClientRef.current = client;
 
