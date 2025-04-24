@@ -1,3 +1,4 @@
+# 개인 프로젝트
 # 🗨️ 바바톡 (Everytalk-Sns-Service)  
 ### WebSocket 기반 실시간 익명 채팅 & SNS 서비스
 
